@@ -1,0 +1,59 @@
+version: '3.3'
+
+services:
+  wishlist_nginx:
+    container_name: wishlist_nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    volumes:
+    - ./app:/app
+    - ./api:/api
+    env_file:
+        - ./.env
+    ports:
+      - "80:80"
+    depends_on:
+   #   - wishlist_app
+      - wishlist_api
+
+#  wishlist_app:
+#    container_name: wishlist_app
+#    build:
+#      context: .
+#      dockerfile: docker/node/Dockerfile
+#    volumes:
+#      - ./app:/app
+#      - /app/node_modules
+#    env_file:
+#      - ./.env
+
+  wishlist_api:
+    container_name: wishlist_api
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+    volumes:
+      - ./api:/api
+    env_file:
+      - ./.env
+
+  wishlist_db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: BCB{HsQ^)udL2A>&f
+      #MYSQL_DATABASE: wishlist
+      #MYSQL_USER: api_wishlist
+      #MYSQL_PASSWORD: Qv9AYqX7BNAhY
+    volumes:
+      - ./docker/database:/docker-entrypoint-initdb.d
+
+  wishlist_adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8080:8080
+
+

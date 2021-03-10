@@ -1,0 +1,12 @@
+{
+  "name": "wishlist",
+  "script": "index.js",
+  "watch": true,
+  "watch_options": {
+    "usePolling": true
+  },
+  "instances": "1",
+  "env_production" : {
+    "NODE_ENV": "production"
+  }
+}
