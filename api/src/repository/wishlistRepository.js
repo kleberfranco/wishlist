@@ -33,6 +33,31 @@ module.exports = {
         }
         return wishlists
     },
+    async findById(id) {
+        let wishlists = await wishlistDb.findAll({
+            attributes: ['id', 'active'],
+            where: {
+                id: id
+            },
+            include: [
+                {
+                    model: customersDb, as: 'customer',
+                    required: true,
+                    attributes: ['id', 'name', 'email']
+                },
+                {
+                    model: wishlistProdDb, as: 'products',
+                    required: true,
+                    attributes: ['id', 'product_id', 'active']
+                }
+            ]
+        })
+
+        if (wishlists === null) {
+            throw new exceptionNotFound("Wishlist not found!")
+        }
+        return wishlists.length > 0 ? wishlists[0] : {}
+    },
     async create(customerId, productId) {
         const product = await productService.findOne(productId)
         let wishlists = await this.findByCustomer(customerId);
@@ -117,5 +142,8 @@ module.exports = {
         });
 
         return wishlist.length > 0 ? wishlist[0] : {}
+    },
+    async update(id, updatewishlist) {
+        return wishlistDb.update(updatewishlist, {where: {id: id}});
     }
 };

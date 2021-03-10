@@ -9,11 +9,25 @@ exports.list = async function (req, res) {
     }
 };
 
-exports.update = function (req, res) {
-    res.send('NOT IMPLEMENTED: Author update GET');
+exports.listWishlist = async function (req, res) {
+    try {
+        const id = req.params.id
+        let wishlist = await wishlistRepository.findById(id)
+        res.json(wishlist)
+    } catch (error) {
+        res.json({message: error.message})
+    }
 };
+exports.delete = async function (req, res) {
+    try {
+        const id = req.params.id
+        await wishlistRepository.findById(id)
 
-exports.delete = function (req, res) {
-    res.send('NOT IMPLEMENTED: Author delete GET');
+        res.status(204)
+        wishlistRepository.update(id, {active: 0});
+        res.end();
+    } catch (error) {
+        res.json({message: error.message})
+    }
 };
 

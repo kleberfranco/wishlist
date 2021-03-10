@@ -10,8 +10,11 @@ router.get('/customer/:id', auth.authenticateToken, customerController.listCusto
 router.put('/customer/:id', auth.authenticateToken, customerController.update)
 router.delete('/customer/:id', auth.authenticateToken, customerController.delete)
 router.post('/customer/:id/wishlist', auth.authenticateToken, customerController.createWishlist)
+router.get('/customer/:id/wishlist', auth.authenticateToken, customerController.listWishlist)
 
 router.get('/wishlists', auth.authenticateToken, wishlistController.list)
+router.get('/wishlist/:id', auth.authenticateToken, wishlistController.listWishlist)
+router.delete('/wishlist/:id', auth.authenticateToken, wishlistController.delete)
 
 router.post('/auth/token', authController.createToken)
 

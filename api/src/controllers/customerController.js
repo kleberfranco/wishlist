@@ -148,4 +148,13 @@ exports.createWishlist = async function (req, res) {
     }
 };
 
+exports.listWishlist = async function (req, res) {
+    try {
+        const id = req.params.id
+        let wishlists = await wishlistRepository.findByCustomer(id)
+        res.json(wishlists)
+    } catch (error) {
+        res.json({message: error.message})
+    }
+};
 
