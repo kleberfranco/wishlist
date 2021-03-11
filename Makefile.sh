@@ -43,8 +43,7 @@ apil:
 bash: shell
 
 ips:
-	$(DOCKER_COMPOSE) ps | sed -e '/Name/,+1d' | awk '{print $$1}' | while read f; do echo "$$f -> "$$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $$f); done
-
+	$(DOCKER_COMPOSE) ps --services | awk '{print $$1}' | while read f; do echo "$$f -> "$$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $$f); done
 
 #############################
 # Argument fix workaround
