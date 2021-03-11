@@ -1,8 +1,7 @@
 const wishlistDb = require('../dabase').wishlists;
 const wishlistProdDb = require('../dabase').wishlistProducts;
 const customersDb = require('../dabase').customers;
-const exceptionNotFound = require('../exceptions/exceptionNotFound')
-const productNotFound = require('../exceptions/productNotFound')
+const notFound = require('../exceptions/notFound')
 const productService = require('../service/productService')
 
 module.exports = {
@@ -29,7 +28,7 @@ module.exports = {
         })
 
         if (wishlists === null) {
-            throw new exceptionNotFound("Wishlists not found!")
+            throw new notFound("Wishlists not found!")
         }
         return wishlists
     },
@@ -54,7 +53,7 @@ module.exports = {
         })
 
         if (wishlists === null) {
-            throw new exceptionNotFound("Wishlist not found!")
+            throw new notFound("Wishlist not found!")
         }
         return wishlists.length > 0 ? wishlists[0] : {}
     },

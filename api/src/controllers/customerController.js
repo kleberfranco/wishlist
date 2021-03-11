@@ -1,28 +1,28 @@
 const Joi = require('joi');
-const axios = require('axios');
 const customerRepository = require('../repository/customerRepository')
 const wishlistRepository = require('../repository/wishlistRepository')
+const EmailInvalid = require('../exceptions/emailInvalid')
 
-exports.list = async function (req, res) {
+exports.list = async function (req, res, next) {
     try {
         let customers = await customerRepository.findAll()
         res.json(customers)
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 
-exports.listCustomer = async function (req, res) {
+exports.listCustomer = async function (req, res, next) {
     try {
         const id = req.params.id
         let customer = await customerRepository.findById(id)
         res.json(customer)
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 
-exports.create = async function (req, res) {
+exports.create = async function (req, res, next) {
     try {
         // create schema object
         const schema = Joi.object({
@@ -49,16 +49,15 @@ exports.create = async function (req, res) {
             res.json({message: `${error.details.map(x => x.message).join(', ')}`});
         }
 
-        const customer = await customerRepository.createByEmail(value);
-
+        await customerRepository.createByEmail(value);
         res.status(201)
-        res.json(customer)
+        res.end()
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 
-exports.update = async function (req, res) {
+exports.update = async function (req, res, next) {
     try {
         const id = req.params.id
         await customerRepository.findById(id)
@@ -88,38 +87,36 @@ exports.update = async function (req, res) {
             res.json({message: `${error.details.map(x => x.message).join(', ')}`});
         }
 
-        customer = await customerRepository.findByEmail(value.email);
+        let customer = await customerRepository.findByEmail(value.email);
         if (customer !== null && customer.id !== Number(id)) {
-            throw new Error("Email already registered!")
+            throw new EmailInvalid("Email already registered!")
         }
 
-        res.status(204)
-        customerRepository.update(id, value);
-        res.end();
+        await customerRepository.update(id, value);
+        res.status(204).end();
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 
-exports.delete = async function (req, res) {
+exports.delete = async function (req, res, next) {
     try {
         const id = req.params.id
         await customerRepository.findById(id)
 
-        res.status(204)
-        customerRepository.update(id, {active: 0});
-        res.end();
+        await customerRepository.update(id, {active: 0});
+        res.status(204).end();
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 
-exports.createWishlist = async function (req, res) {
+exports.createWishlist = async function (req, res, next) {
     try {
         const id = req.params.id
         // create schema object
         const schema = Joi.object({
-            products: Joi.string().required()
+            product: Joi.string().required()
         });
 
         // schema options
@@ -140,21 +137,20 @@ exports.createWishlist = async function (req, res) {
             res.json({message: `${error.details.map(x => x.message).join(', ')}`});
         }
 
-        const wishlist = await wishlistRepository.create(id, value.products);
-        res.status(201)
-        res.json(wishlist)
+        const wishlist = await wishlistRepository.create(id, value.product);
+        res.status(201).json(wishlist)
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 
-exports.listWishlist = async function (req, res) {
+exports.listWishlist = async function (req, res, next) {
     try {
         const id = req.params.id
         let wishlists = await wishlistRepository.findByCustomer(id)
         res.json(wishlists)
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 

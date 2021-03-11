@@ -8,12 +8,12 @@ exports.generateAccessToken = function (username) {
 exports.authenticateToken = function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
-    if (token == null) return res.sendStatus(401)
+    if (token == null) return res.status(401).end();
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
             console.log(err)
-            return res.sendStatus(403)
+            return res.status(403).end();
         }
         req.user = user
         next()

@@ -1,4 +1,4 @@
-class ExceptionNotFound extends Error {
+class NotFound extends Error {
     constructor(message) {
         super(message);
         Error.captureStackTrace(this, this.constructor);
@@ -12,4 +12,4 @@ class ExceptionNotFound extends Error {
     }
 }
 
-module.exports = ExceptionNotFound
+module.exports = NotFound

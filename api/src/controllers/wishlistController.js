@@ -23,8 +23,8 @@ exports.delete = async function (req, res) {
         const id = req.params.id
         await wishlistRepository.findById(id)
 
+        await wishlistRepository.update(id, {active: 0});
         res.status(204)
-        wishlistRepository.update(id, {active: 0});
         res.end();
     } catch (error) {
         res.json({message: error.message})
