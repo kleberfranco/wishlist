@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `database/index` file will call this method automatically.
      */
     static associate(models) {
-      // wishlists.belongsTo(models.customers, {foreignKey: 'customer', as: 'customers'})
       wishlists.hasMany(models.wishlistProducts, {foreignKey: 'wishlist_id', as: 'products'}),
       wishlists.belongsTo(models.customers, {foreignKey: 'customer_id', as: 'customer'})
     }

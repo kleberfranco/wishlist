@@ -12,7 +12,7 @@ module.exports = {
     async findOne(productId) {
         return await axios.get(process.env.API_PRODUCTS + '/' + productId + '/')
             .catch(error => {
-                throw new notFound(error.message);
+                throw new notFound('Product not found (' + productId + ')');
             })
     }
 };

@@ -116,7 +116,7 @@ exports.createWishlist = async function (req, res, next) {
         const id = req.params.id
         // create schema object
         const schema = Joi.object({
-            product: Joi.string().required()
+            products: Joi.array().required()
         });
 
         // schema options
@@ -137,8 +137,8 @@ exports.createWishlist = async function (req, res, next) {
             res.json({message: `${error.details.map(x => x.message).join(', ')}`});
         }
 
-        const wishlist = await wishlistRepository.create(id, value.product);
-        res.status(201).json(wishlist)
+        await wishlistRepository.create(id, value.products);
+        res.status(201).end()
     } catch (error) {
         next(error)
     }

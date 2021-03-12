@@ -18,16 +18,15 @@ exports.listWishlist = async function (req, res) {
         res.json({message: error.message})
     }
 };
-exports.delete = async function (req, res) {
+exports.delete = async function (req, res, next) {
     try {
         const id = req.params.id
         await wishlistRepository.findById(id)
 
         await wishlistRepository.update(id, {active: 0});
-        res.status(204)
-        res.end();
+        res.status(204).end();
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 

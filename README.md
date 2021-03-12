@@ -41,3 +41,5 @@ make up
 
 
 [![Run in Postman](https://s3.amazonaws.com/postman-static/run-button.png)](https://www.getpostman.com/collections/fc73e04a81a9a60d35cc)
+
+https://github.com/SparkPost/postman-collection/blob/master/README.md

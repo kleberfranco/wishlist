@@ -7,26 +7,13 @@ services:
       context: .
       dockerfile: docker/nginx/Dockerfile
     volumes:
-    - ./app:/app
     - ./api:/api
     env_file:
         - ./.env
     ports:
       - "80:80"
     depends_on:
-   #   - wishlist_app
       - wishlist_api
-
-#  wishlist_app:
-#    container_name: wishlist_app
-#    build:
-#      context: .
-#      dockerfile: docker/node/Dockerfile
-#    volumes:
-#      - ./app:/app
-#      - /app/node_modules
-#    env_file:
-#      - ./.env
 
   wishlist_api:
     container_name: wishlist_api

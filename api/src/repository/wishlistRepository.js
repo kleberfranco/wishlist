@@ -27,7 +27,7 @@ module.exports = {
             ]
         })
 
-        if (wishlists === null) {
+        if (wishlists.length === 0) {
             throw new notFound("Wishlists not found!")
         }
         return wishlists
@@ -51,39 +51,52 @@ module.exports = {
                 }
             ]
         })
-
-        if (wishlists === null) {
+        if (wishlists.length === 0) {
             throw new notFound("Wishlist not found!")
         }
         return wishlists.length > 0 ? wishlists[0] : {}
     },
-    async create(customerId, productId) {
-        const product = await productService.findOne(productId)
+    async create(customerId, products) {
+        // check products
+        for (let productId of products) {
+            await productService.findOne(productId)
+        }
+        let insertProducts = products;
         let wishlists = await this.findByCustomer(customerId);
 
         if (wishlists.products && wishlists.products.length) {
-            let products = wishlists.products.map(result => result.dataValues)
-            let checkProducts = await products.filter(function (product) {
-                return product.product_id === productId
+            const wishlistsId = wishlists.id
+            let wishlistsProducts = await wishlists.products.map(result => result.dataValues)
+            let updateProducts = await wishlistsProducts.filter(function (product) {
+                return products.includes(product.product_id)
             });
-            if (checkProducts.length === 0) {
-                let newProduct = await wishlistProdDb.create({wishlist_id: wishlists.id, product_id: productId})
-                wishlists.products.push(newProduct)
-            } else {
+            if (updateProducts) {
+                const updateOnlyIds = updateProducts.map(result => result.product_id);
                 await wishlistProdDb.update({'active': '1'}, {
                     where: {
-                        wishlist_id: wishlists.id,
-                        product_id: productId
+                        wishlist_id: wishlistsId,
+                        product_id: updateOnlyIds
                     }
                 });
+
+                insertProducts = await insertProducts.filter(function (product) {
+                    return !updateOnlyIds.includes(product)
+                });
             }
-            return wishlists
+            if (insertProducts.length) {
+                const newProducts = insertProducts.map(function (result) {
+                    return {"wishlist_id": wishlistsId, "product_id": result};
+                })
+                await wishlistProdDb.bulkCreate(newProducts)
+            }
         } else {
+            const newProducts = insertProducts.map(function (result) {
+                return {"product_id": result};
+            })
+
             await wishlistDb.create({
                 customer_id: customerId,
-                products: [
-                    {product_id: productId}
-                ]
+                products: newProducts
             }, {
                 include: [
                     {
@@ -91,8 +104,8 @@ module.exports = {
                     }
                 ]
             });
-            return await this.findByCustomer(customerId);
         }
+        return true
     },
     async findByCustomerProduct(customerId, productId) {
         let wishlist = await wishlistDb.findAll({
