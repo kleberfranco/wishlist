@@ -1,21 +1,21 @@
 const wishlistRepository = require('../repository/wishlistRepository')
 
-exports.list = async function (req, res) {
+exports.list = async function (req, res, next) {
     try {
         let wishlist = await wishlistRepository.findAll()
         res.json(wishlist)
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 
-exports.listWishlist = async function (req, res) {
+exports.listWishlist = async function (req, res, next) {
     try {
         const id = req.params.id
         let wishlist = await wishlistRepository.findById(id)
         res.json(wishlist)
     } catch (error) {
-        res.json({message: error.message})
+        next(error)
     }
 };
 exports.delete = async function (req, res, next) {

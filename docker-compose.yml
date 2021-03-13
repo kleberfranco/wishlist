@@ -22,6 +22,7 @@ services:
       dockerfile: docker/node/Dockerfile
     volumes:
       - ./api:/api
+      - /api/node_modules
     env_file:
       - ./.env
 
