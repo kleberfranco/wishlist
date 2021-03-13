@@ -24,7 +24,7 @@ beforeAll( (done) => {
                 .set('Content-Type', 'application/json')
                 .send({
                     name: 'testes',
-                    email: 'teste@testes.com.br',
+                    email: 'teste_' + Math.random() + '@testes.com.br',
                 })
                 .expect(201)
                 .end((err, res) => {
@@ -83,7 +83,7 @@ describe('wishlistController Test', () => {
             .set('Authorization', `Bearer ${token}`)
             .set('Content-Type', 'application/json')
             .send({})
-            .expect(403)
+            .expect(422)
             .end(function(err, res) {
                 if (err) return done(err);
                 done();

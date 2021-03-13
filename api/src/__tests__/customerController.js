@@ -3,6 +3,7 @@ const request = supertest('wishlist_api:3000')
 
 let token;
 let customerId;
+let emailCustomer = 'teste_' + Math.random() + '@testes.com.br';
 
 beforeAll((done) => {
     request
@@ -53,7 +54,7 @@ describe('customerController Test', () => {
             .send({
                 name: 'testes'
             })
-            .expect(403)
+            .expect(422)
             .end(function(err, res) {
                 if (err) return done(err);
                 done();
@@ -69,7 +70,7 @@ describe('customerController Test', () => {
                 name: 'testes',
                 email: 'teste',
             })
-            .expect(403)
+            .expect(422)
             .end(function(err, res) {
                 if (err) return done(err);
                 done();
@@ -84,9 +85,26 @@ describe('customerController Test', () => {
             .set('Content-Type', 'application/json')
             .send({
                 name: 'testes',
-                email: 'teste@testes.com.br',
+                email: emailCustomer,
             })
             .expect(201)
+            .end(function(err, res) {
+                if (err) return done(err);
+                done();
+            });
+    });
+
+
+    it('customerController: Email already (create new customer)', function(done) {
+        request
+            .post('/customer')
+            .set('Authorization', `Bearer ${token}`)
+            .set('Content-Type', 'application/json')
+            .send({
+                name: 'testes',
+                email: emailCustomer,
+            })
+            .expect(422)
             .end(function(err, res) {
                 if (err) return done(err);
                 done();
@@ -148,7 +166,7 @@ describe('customerController Test', () => {
             .set('Authorization', `Bearer ${token}`)
             .set('Content-Type', 'application/json')
             .send({})
-            .expect(406)
+            .expect(422)
             .end(function(err, res) {
                 if (err) return done(err);
                 done();
@@ -164,7 +182,7 @@ describe('customerController Test', () => {
                 name: 'testes',
                 email: 'teste',
             })
-            .expect(403)
+            .expect(422)
             .end(function(err, res) {
                 if (err) return done(err);
                 done();

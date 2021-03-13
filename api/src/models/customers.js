@@ -13,7 +13,18 @@ module.exports = (sequelize, DataTypes) => {
     };
     customers.init({
         name: DataTypes.STRING,
-        email: DataTypes.STRING,
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                isEmail: {
+                    msg: "Must be a valid email address",
+                }
+            },
+            unique: {
+                msg: 'Email address already in use!'
+            }
+        },
         active: {type: DataTypes.BOOLEAN, defaultValue: true}
     }, {
         sequelize,

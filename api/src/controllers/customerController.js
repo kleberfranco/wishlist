@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const customerRepository = require('../repository/customerRepository')
 const wishlistRepository = require('../repository/wishlistRepository')
-const EmailInvalid = require('../exceptions/emailInvalid')
+const validator = require('../service/validator')
 
 exports.list = async function (req, res, next) {
     try {
@@ -30,31 +30,7 @@ exports.listCustomer = async function (req, res, next) {
 
 exports.create = async function (req, res, next) {
     try {
-        // create schema object
-        const schema = Joi.object({
-            name: Joi.string().required(),
-            email: Joi.string().email().required()
-        });
-
-        // schema options
-        const options = {
-            abortEarly: false,
-            allowUnknown: true,
-            stripUnknown: true,
-            errors: {
-                wrap: {
-                    label: ''
-                }
-            }
-        };
-
-        // validate request body against schema
-        const {error, value} = schema.validate(req.body, options);
-        if (error) {
-            res.status(403)
-            res.json({message: `${error.details.map(x => x.message).join(', ')}`});
-            return
-        }
+        const value = await validator('createCustomer', req.body);
 
         await customerRepository.createByEmail(value);
         res.status(201)
@@ -66,45 +42,9 @@ exports.create = async function (req, res, next) {
 
 exports.update = async function (req, res, next) {
     try {
+        const value = await validator('updateCustomer', req.body, req.params);
         const id = req.params.id
         await customerRepository.findById(id)
-
-        // create schema object
-        const schema = Joi.object({
-            name: Joi.string().empty(''),
-            email: Joi.string().email().empty(''),
-            active: Joi.string().empty(''),
-        });
-
-        // schema options
-        const options = {
-            abortEarly: false,
-            allowUnknown: true,
-            stripUnknown: true,
-            errors: {
-                wrap: {
-                    label: ''
-                }
-            }
-        };
-        // validate request body against schema
-        const {error, value} = schema.validate(req.body, options);
-        if (error) {
-            res.status(403)
-            res.json({message: `${error.details.map(x => x.message).join(', ')}`});
-            return
-        }
-
-        if (!Object.keys(value).length) {
-            throw new EmailInvalid("Required values!")
-        }
-
-        if (value.email) {
-            let customer = await customerRepository.findByEmail(value.email);
-            if (customer !== null && customer.id !== Number(id)) {
-                throw new EmailInvalid("Email already registered!")
-            }
-        }
 
         await customerRepository.update(id, value);
         res.status(204).end();
@@ -127,32 +67,9 @@ exports.delete = async function (req, res, next) {
 
 exports.createWishlist = async function (req, res, next) {
     try {
+        const value = await validator('createWishlist', req.body);
         const id = req.params.id
         await customerRepository.findById(id)
-
-        // create schema object
-        const schema = Joi.object({
-            products: Joi.array().required()
-        });
-
-        // schema options
-        const options = {
-            abortEarly: false,
-            allowUnknown: true,
-            stripUnknown: true,
-            errors: {
-                wrap: {
-                    label: ''
-                }
-            }
-        };
-        // validate request body against schema
-        const {error, value} = schema.validate(req.body, options);
-        if (error) {
-            res.status(403)
-            res.json({message: `${error.details.map(x => x.message).join(', ')}`});
-            return
-        }
 
         await wishlistRepository.create(id, value.products);
         res.status(201).end()

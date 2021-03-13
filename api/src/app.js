@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const dotenv = require('dotenv/config');
 const database = require('./dabase');
 const notFound = require('../src/exceptions/notFound')
-const emailInvalid = require('../src/exceptions/emailInvalid')
+const invalidRequest = require('../src/exceptions/invalidRequest')
 const paginate = require('express-paginate');
 
 class App {
@@ -27,7 +27,7 @@ class App {
     response() {
         this.server.use((error, req, res, next) => {
             let status = 400
-            if (error instanceof notFound || error instanceof emailInvalid) {
+            if (error instanceof notFound || error instanceof invalidRequest) {
                 status = error.statusCode()
             }
             res.status(status).json({message: error.message})
