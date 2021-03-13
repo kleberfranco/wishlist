@@ -2,8 +2,14 @@ const wishlistRepository = require('../repository/wishlistRepository')
 
 exports.list = async function (req, res, next) {
     try {
-        let wishlist = await wishlistRepository.findAll()
-        res.json(wishlist)
+        let wishlists = await wishlistRepository.findAll(req.query.limit, req.skip)
+        const itemCount = wishlists.count;
+        const pageCount = Math.ceil(wishlists.count / req.query.limit);
+        res.json( {
+            wishlists: wishlists.rows,
+            pageCount,
+            itemCount
+        });
     } catch (error) {
         next(error)
     }

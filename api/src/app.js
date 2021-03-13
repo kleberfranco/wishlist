@@ -5,6 +5,7 @@ const dotenv = require('dotenv/config');
 const database = require('./dabase');
 const notFound = require('../src/exceptions/notFound')
 const emailInvalid = require('../src/exceptions/emailInvalid')
+const paginate = require('express-paginate');
 
 class App {
     constructor() {
@@ -19,6 +20,7 @@ class App {
     }
 
     middlewares() {
+        this.server.use(paginate.middleware(10, 50));
         this.server.use(bodyParser.json());
     }
 

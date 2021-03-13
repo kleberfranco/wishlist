@@ -3,8 +3,8 @@ const notFound = require('../exceptions/notFound')
 const axios = require('axios');
 
 module.exports = {
-    async findAll() {
-        let customers = await customersDb.findAll()
+    async findAll(limit, offset) {
+        let customers = await customersDb.findAndCountAll({limit: limit, offset: offset})
         if (customers === null) {
             throw new notFound("Customers not found!")
         }

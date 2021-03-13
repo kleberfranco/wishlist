@@ -5,13 +5,14 @@ const notFound = require('../exceptions/notFound')
 const productService = require('../service/productService')
 
 module.exports = {
-    async findAll() {
-        let wishlists = await wishlistDb.findAll({
+    async findAll(limit, offset) {
+        let wishlists = await wishlistDb.findAndCountAll({
             attributes: ['id', 'active'],
+            limit: limit,
+            offset: offset,
             where: {
                 active: '1',
-                '$customer.active$': 1,
-                '$products.active$': 1,
+                '$customer.active$': true
             },
             include: [
                 {
@@ -27,7 +28,7 @@ module.exports = {
             ]
         })
 
-        if (wishlists.length === 0) {
+        if (wishlists.rows === 0) {
             throw new notFound("Wishlists not found!")
         }
         return wishlists

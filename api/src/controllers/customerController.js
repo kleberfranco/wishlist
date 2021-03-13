@@ -5,8 +5,14 @@ const EmailInvalid = require('../exceptions/emailInvalid')
 
 exports.list = async function (req, res, next) {
     try {
-        let customers = await customerRepository.findAll()
-        res.json(customers)
+        let customers = await customerRepository.findAll(req.query.limit, req.skip)
+        const itemCount = customers.count;
+        const pageCount = Math.ceil(customers.count / req.query.limit);
+        res.json( {
+            customers: customers.rows,
+            pageCount,
+            itemCount
+        });
     } catch (error) {
         next(error)
     }
