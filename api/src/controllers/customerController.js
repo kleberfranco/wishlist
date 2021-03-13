@@ -53,6 +53,7 @@ exports.create = async function (req, res, next) {
         if (error) {
             res.status(403)
             res.json({message: `${error.details.map(x => x.message).join(', ')}`});
+            return
         }
 
         await customerRepository.createByEmail(value);
@@ -91,6 +92,7 @@ exports.update = async function (req, res, next) {
         if (error) {
             res.status(403)
             res.json({message: `${error.details.map(x => x.message).join(', ')}`});
+            return
         }
 
         let customer = await customerRepository.findByEmail(value.email);
@@ -141,6 +143,7 @@ exports.createWishlist = async function (req, res, next) {
         if (error) {
             res.status(403)
             res.json({message: `${error.details.map(x => x.message).join(', ')}`});
+            return
         }
 
         await wishlistRepository.create(id, value.products);
