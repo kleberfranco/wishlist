@@ -95,9 +95,15 @@ exports.update = async function (req, res, next) {
             return
         }
 
-        let customer = await customerRepository.findByEmail(value.email);
-        if (customer !== null && customer.id !== Number(id)) {
-            throw new EmailInvalid("Email already registered!")
+        if (!Object.keys(value).length) {
+            throw new EmailInvalid("Required values!")
+        }
+
+        if (value.email) {
+            let customer = await customerRepository.findByEmail(value.email);
+            if (customer !== null && customer.id !== Number(id)) {
+                throw new EmailInvalid("Email already registered!")
+            }
         }
 
         await customerRepository.update(id, value);
