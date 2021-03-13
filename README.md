@@ -78,6 +78,18 @@ Mais informações sobre como gerenciar ambientes e variáveis Postman podem ser
 |`customer_id`|-|Identificador do Cadastro do cliente|
 |`wishlist_id`|-|Identificador do Cadastro da Lista de produtos favoritos|
 
+## Testes Funcionais
++ Para executar os testes funcionais, na pasta raiz do projeto, executar o comando abaixo:
+
+### Windows
+``` 
+docker-compose exec wishlist_api npm test
+```
+
+### Linux, Mac
+``` 
+make apit
+```
 
 ### Contribute
 

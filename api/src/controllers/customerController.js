@@ -128,6 +128,8 @@ exports.delete = async function (req, res, next) {
 exports.createWishlist = async function (req, res, next) {
     try {
         const id = req.params.id
+        await customerRepository.findById(id)
+
         // create schema object
         const schema = Joi.object({
             products: Joi.array().required()

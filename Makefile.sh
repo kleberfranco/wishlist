@@ -40,6 +40,10 @@ logs:
 apil:
 	$(DOCKER_COMPOSE) logs --follow wishlist_api
 
+
+apit:
+	$(DOCKER_COMPOSE) exec wishlist_api npm test
+
 bash: shell
 
 ips:

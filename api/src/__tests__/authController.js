@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const request = supertest('wishlist_api:3000')
 
 describe('authController Test', () => {
-    it('create token', async done => {
+    it('authController: create token', async done => {
         const res = await request
             .post('/auth/token')
             .set('Content-Type', 'application/json')
