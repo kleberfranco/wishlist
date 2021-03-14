@@ -5,7 +5,7 @@ ENV NPM_CONFIG_LOGLEVEL error
 ADD api /api
 WORKDIR /api
 
-RUN npm install -g
+RUN npm install
 
 CMD [ "pm2-runtime", "start", "pm2.json" ]
 
