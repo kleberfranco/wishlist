@@ -41,8 +41,11 @@ make build dev
 make up
 ```
 
-## Documentação da API
-Para visualizar a documentação, [clique aqui](https://documenter.getpostman.com/view/2255152/Tz5qZwXG)
+# Documentação da API
+Para visualizar a documentação e exemplos, por favor, [clique aqui](https://documenter.getpostman.com/view/2255152/Tz5qZwXG)
+
+======================================================
+
 
 ## Testes Postman
 Para usar a última versão publicada, clique no botão a seguir para importar a coleção da API Wishlist:
